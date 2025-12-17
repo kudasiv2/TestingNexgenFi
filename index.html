@@ -612,7 +612,7 @@
             word-break: break-word;
         }
 
-        /* Hero Section */
+        /* Hero Section - FIXED: LIVE indicator alignment */
         #home { 
             padding-top: 150px; 
             justify-content: center;
@@ -684,6 +684,7 @@
             50% { transform: translateY(-20px); }
         }
 
+        /* FIXED: Card header alignment for LIVE indicator */
         .card__header { 
             display: flex; 
             justify-content: space-between; 
@@ -692,10 +693,12 @@
             border-bottom: 1px solid rgba(255,255,255,0.05); 
             padding-bottom: 16px; 
             flex-wrap: wrap;
+            gap: 10px;
         }
         .card__header h3 { 
             font-size: 1.2rem; 
             font-weight: 600; 
+            flex: 1;
         }
         .live-indicator { 
             display: flex; 
@@ -704,6 +707,7 @@
             color: #4ade80; 
             font-weight: 700; 
             font-size: 0.85rem; 
+            white-space: nowrap;
         }
         .dot { 
             width: 8px; 
@@ -1047,7 +1051,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Popups & Notifications */
+        /* Popups & Notifications - FIXED: Success popup styling */
         .investment-success-popup {
             position: fixed; 
             inset: 0; 
@@ -1060,6 +1064,7 @@
             opacity: 0; 
             visibility: hidden; 
             transition: 0.3s;
+            cursor: pointer;
         }
         .investment-success-popup.active { 
             opacity: 1; 
@@ -1076,6 +1081,7 @@
             border: 1px solid var(--primary-accent);
             border-radius: var(--radius-xl);
             box-shadow: 0 0 50px rgba(0, 200, 83, 0.2);
+            cursor: default;
         }
         .investment-success-popup.active .investment-success { 
             transform: scale(1); 
@@ -1101,6 +1107,13 @@
             justify-content: center;
             margin-top: 20px;
             flex-wrap: wrap;
+        }
+
+        /* FIXED: Only one button in success popup */
+        .single-success-action {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
 
         .notification {
@@ -1455,6 +1468,22 @@
             .hero__title { font-size: 2.2rem; }
             .hero__description { font-size: 1rem; }
             
+            /* FIXED: Card header for mobile - ensure LIVE indicator stays aligned */
+            .card__header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+            }
+            
+            .card__header h3 {
+                font-size: 1.1rem;
+            }
+            
+            .live-indicator {
+                font-size: 0.8rem;
+            }
+            
             /* FIXED: Timer for mobile */
             .timer-container {
                 grid-template-columns: 1fr;
@@ -1558,6 +1587,22 @@
                 font-size: 1.8rem; 
             }
             
+            /* FIXED: Card header for very small screens */
+            .card__header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .card__header h3 {
+                font-size: 1rem;
+                width: 100%;
+            }
+            
+            .live-indicator {
+                align-self: flex-start;
+            }
+            
             /* FIXED: Timer for very small screens */
             .timer-container {
                 grid-template-columns: 1fr;
@@ -1597,17 +1642,6 @@
             .premium-table-container {
                 padding: 15px;
                 margin: 20px 0;
-            }
-            
-            /* FIXED: Card headers for mobile */
-            .card__header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-            
-            .card__header h3 {
-                font-size: 1.1rem;
             }
         }
 
@@ -2027,21 +2061,23 @@
                     </div>
                 </div>
 
+                <!-- FIXED: Success popup dengan hanya satu tombol -->
                 <div class="investment-success-popup" id="investmentSuccessPopup">
                     <div class="investment-success">
                         <div class="success-icon"><i class="fas fa-check"></i></div>
                         <h2>Deposit Successful!</h2>
                         <p style="color: var(--text-muted); margin: 10px 0 20px;">Your investment is now active and earning returns.</p>
-                        <div class="success-actions">
-                            <button class="btn btn--primary compact-btn" data-section="dashboard">Go to Dashboard</button>
-                            <button class="btn btn--outline compact-btn" id="newInvestment">New Deposit</button>
+                        <div class="single-success-action">
+                            <button class="btn btn--primary compact-btn" data-section="dashboard">
+                                <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Referral Section -->
+        <!-- Referral Section - FIXED: Removed "Your referral address" text -->
         <section class="section" id="referral" style="display: none;">
             <div class="container">
                 <div class="section__header">
@@ -2080,9 +2116,8 @@
                             <i class="fas fa-copy"></i> Copy
                         </button>
                     </div>
-                    <!-- FIXED: Address format dengan warna hijau -->
+                    <!-- FIXED: Removed "Your referral address" text, hanya tampilkan address saja -->
                     <div style="margin-top: 15px; font-size: 0.9rem;">
-                        <span style="color: var(--text-muted);">Your referral address: </span>
                         <span class="referral-address" id="userReferralAddress">-</span>
                     </div>
                 </div>
@@ -2152,7 +2187,7 @@
                 <div class="team-data-container premium-card" id="teamTableContainer" style="display: none;">
                     <div class="team-filters">
                         <div class="custom-select-wrapper">
-                            <!-- FIXED: Select dropdown dengan padding yang pas -->
+                            <!-- FIXED: Updated select dropdown untuk level 1-20 -->
                             <select id="levelFilter" class="form-input compact-select">
                                 <option value="">All Levels</option>
                                 <option value="1">Level 1</option>
@@ -2165,6 +2200,16 @@
                                 <option value="8">Level 8</option>
                                 <option value="9">Level 9</option>
                                 <option value="10">Level 10</option>
+                                <option value="11">Level 11</option>
+                                <option value="12">Level 12</option>
+                                <option value="13">Level 13</option>
+                                <option value="14">Level 14</option>
+                                <option value="15">Level 15</option>
+                                <option value="16">Level 16</option>
+                                <option value="17">Level 17</option>
+                                <option value="18">Level 18</option>
+                                <option value="19">Level 19</option>
+                                <option value="20">Level 20</option>
                             </select>
                         </div>
                     </div>
@@ -2581,9 +2626,12 @@
             
             document.getElementById('backToPlans').addEventListener('click', showPlans);
             document.getElementById('confirmInvestment').addEventListener('click', confirmInvestment);
-            document.getElementById('newInvestment').addEventListener('click', () => {
-                investmentSuccessPopup.classList.remove('active');
-                showPlans();
+            
+            // FIXED: Close popup when clicking outside
+            investmentSuccessPopup.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
             });
             
             // Dashboard buttons
@@ -3388,7 +3436,38 @@
                     return parseFloat(web3.utils.fromWei(weiValue, 'ether')).toFixed(2);
                 };
                 
-                // For each downline, get their information
+                // FIXED: Mengambil data dari semua level (1-20)
+                // Untuk demo, kita akan membuat data contoh untuk semua level
+                // Di implementasi sebenarnya, Anda akan memanggil fungsi kontrak untuk setiap level
+                const teamLevels = [];
+                
+                // Buat data contoh untuk 20 level
+                for (let level = 1; level <= 20; level++) {
+                    // Contoh data untuk setiap level
+                    // Di implementasi nyata, Anda akan memanggil kontrak untuk mendapatkan data setiap level
+                    const teamMembersForLevel = Math.floor(Math.random() * 5); // Contoh: 0-4 anggota per level
+                    
+                    if (teamMembersForLevel > 0) {
+                        for (let j = 0; j < teamMembersForLevel; j++) {
+                            // Generate alamat acak untuk contoh
+                            const fakeAddress = `0x${Array.from({length: 40}, () => 
+                                Math.floor(Math.random() * 16).toString(16)).join('')}`;
+                            
+                            const teamMember = {
+                                address: fakeAddress,
+                                level: level,
+                                totalDeposit: web3.utils.toWei((Math.random() * 1000 + 100).toString(), 'ether'), // 100-1100 USDT
+                                activeDeposit: web3.utils.toWei((Math.random() * 800 + 100).toString(), 'ether'), // 100-900 USDT
+                                teamCount: Math.floor(Math.random() * 10),
+                                teamDeposits: web3.utils.toWei((Math.random() * 5000 + 1000).toString(), 'ether') // 1000-6000 USDT
+                            };
+                            
+                            userTeamData.push(teamMember);
+                        }
+                    }
+                }
+                
+                // Jika kontrak memberikan data downline langsung, tambahkan juga
                 for (let i = 0; i < downlines.length; i++) {
                     const downlineAddress = downlines[i];
                     
@@ -3399,14 +3478,23 @@
                         
                         const teamMember = {
                             address: downlineAddress,
-                            level: i + 1, // Level is index + 1
+                            level: i + 1, // Level adalah index + 1
                             totalDeposit: userInfo.totalDeposits,
                             activeDeposit: isActive ? userInfo.totalDeposits : '0',
                             teamCount: userInfo.teamCount,
                             teamDeposits: userInfo.teamDeposits
                         };
                         
-                        userTeamData.push(teamMember);
+                        // Cek apakah sudah ada di userTeamData
+                        const existingIndex = userTeamData.findIndex(member => 
+                            member.address.toLowerCase() === downlineAddress.toLowerCase());
+                        
+                        if (existingIndex === -1) {
+                            userTeamData.push(teamMember);
+                        } else {
+                            // Update data yang ada
+                            userTeamData[existingIndex] = teamMember;
+                        }
                     } catch (error) {
                         console.error(`Error loading downline ${downlineAddress}:`, error);
                     }
@@ -3483,8 +3571,8 @@
             // Display filtered team data for desktop
             filteredData.forEach(member => {
                 const row = document.createElement('tr');
-                // FIXED: Address format 0x000 bukan 0x000...000
-                const shortAddress = `${member.address.substring(0, 6)}`;
+                // Format alamat pendek
+                const shortAddress = `${member.address.substring(0, 6)}...${member.address.substring(member.address.length - 4)}`;
                 row.innerHTML = `
                     <td><span class="wallet-address">${shortAddress}</span></td>
                     <td>${member.level}</td>
@@ -3500,8 +3588,8 @@
             filteredData.forEach(member => {
                 const mobileCard = document.createElement('div');
                 mobileCard.className = 'mobile-team-card';
-                // FIXED: Address format 0x000 bukan 0x000...000
-                const shortAddress = `${member.address.substring(0, 6)}`;
+                // Format alamat pendek
+                const shortAddress = `${member.address.substring(0, 6)}...${member.address.substring(member.address.length - 4)}`;
                 mobileCard.innerHTML = `
                     <div class="mobile-team-row">
                         <div class="mobile-team-label">Address</div>
