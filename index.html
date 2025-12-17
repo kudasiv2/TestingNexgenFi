@@ -438,7 +438,6 @@
             height: 100%;
             width: 100%;
             position: relative;
-            /* REMOVED: Removed the green top border */
         }
 
         .compact-card .stat-icon {
@@ -484,7 +483,7 @@
             max-width: 240px;
         }
 
-        /* Premium Cards - REMOVED green top border */
+        /* Premium Cards */
         .premium-card {
             background: linear-gradient(145deg, rgba(14, 29, 47, 0.9), rgba(10, 25, 41, 0.95));
             backdrop-filter: blur(20px);
@@ -498,8 +497,6 @@
             margin-bottom: 30px;
             width: 100%;
         }
-
-        /* REMOVED: .premium-card::before (green top border) */
 
         .premium-card::after {
             content: '';
@@ -572,6 +569,47 @@
         .team-table th {
             padding: 12px 8px;
             font-size: 0.8rem;
+        }
+
+        /* Mobile Positions View */
+        .mobile-positions-view {
+            display: none;
+        }
+
+        .mobile-position-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .mobile-position-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .mobile-position-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .mobile-position-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .mobile-position-value {
+            color: white;
+            font-weight: 600;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
         }
 
         /* Hero Section */
@@ -872,6 +910,29 @@
             box-shadow: 0 0 0 3px rgba(0, 200, 83, 0.1); 
         }
 
+        /* Custom Select Styling */
+        .custom-select-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .custom-select-wrapper::after {
+            content: "▼";
+            font-size: 0.8rem;
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            color: var(--primary-accent);
+            pointer-events: none;
+            transition: transform 0.3s;
+        }
+
+        .custom-select-wrapper:focus-within::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
         .link-input-group {
             display: flex;
             gap: 10px;
@@ -965,6 +1026,7 @@
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
 
+        /* Wallet Address Styling - FIXED */
         .wallet-address {
             font-family: monospace;
             background: rgba(255,255,255,0.08);
@@ -974,6 +1036,15 @@
             word-break: break-all;
             max-width: 100%;
             display: inline-block;
+            color: var(--primary-accent) !important; /* Hijau */
+        }
+
+        /* Referral Address Format */
+        .referral-address {
+            font-family: monospace;
+            color: var(--primary-accent);
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         /* Popups & Notifications */
@@ -1249,6 +1320,15 @@
             height: 45px;
             font-size: 0.9rem;
             cursor: pointer;
+            padding: 0 35px 0 15px; /* Memberikan ruang untuk tanda panah */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background: rgba(10, 25, 41, 0.8);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: var(--font-body);
         }
 
         /* Mobile Table View for Team Data */
@@ -1437,8 +1517,17 @@
                 grid-template-columns: 1fr;
             }
             
-            /* FIXED: Team data for mobile */
+            /* FIXED: My Positions for mobile */
             .premium-table {
+                display: none;
+            }
+            
+            .mobile-positions-view {
+                display: block;
+            }
+            
+            /* FIXED: Team data for mobile */
+            .team-table {
                 display: none;
             }
             
@@ -1745,7 +1834,7 @@
                     </div>
                 </div>
 
-                <!-- My Positions Section -->
+                <!-- My Positions Section - FIXED for Mobile -->
                 <div class="my-positions-section premium-card" id="myPositionsSection" style="display: none;">
                     <div class="section__header" style="margin-bottom: 30px;">
                         <h3 class="section__title" style="font-size: 1.8rem;">My Positions</h3>
@@ -1770,6 +1859,10 @@
                                     <!-- Positions will be generated by JavaScript -->
                                 </tbody>
                             </table>
+                        </div>
+                        <!-- Mobile View for Positions -->
+                        <div class="mobile-positions-view" id="mobilePositionsView">
+                            <!-- Mobile position cards will be generated by JavaScript -->
                         </div>
                     </div>
                 </div>
@@ -1987,6 +2080,11 @@
                             <i class="fas fa-copy"></i> Copy
                         </button>
                     </div>
+                    <!-- FIXED: Address format dengan warna hijau -->
+                    <div style="margin-top: 15px; font-size: 0.9rem;">
+                        <span style="color: var(--text-muted);">Your referral address: </span>
+                        <span class="referral-address" id="userReferralAddress">-</span>
+                    </div>
                 </div>
 
                 <div class="referral-levels-compact" id="referralLevelsCompact">
@@ -2053,19 +2151,22 @@
 
                 <div class="team-data-container premium-card" id="teamTableContainer" style="display: none;">
                     <div class="team-filters">
-                        <select id="levelFilter" class="form-input compact-select">
-                            <option value="">All Levels</option>
-                            <option value="1">Level 1</option>
-                            <option value="2">Level 2</option>
-                            <option value="3">Level 3</option>
-                            <option value="4">Level 4</option>
-                            <option value="5">Level 5</option>
-                            <option value="6">Level 6</option>
-                            <option value="7">Level 7</option>
-                            <option value="8">Level 8</option>
-                            <option value="9">Level 9</option>
-                            <option value="10">Level 10</option>
-                        </select>
+                        <div class="custom-select-wrapper">
+                            <!-- FIXED: Select dropdown dengan padding yang pas -->
+                            <select id="levelFilter" class="form-input compact-select">
+                                <option value="">All Levels</option>
+                                <option value="1">Level 1</option>
+                                <option value="2">Level 2</option>
+                                <option value="3">Level 3</option>
+                                <option value="4">Level 4</option>
+                                <option value="5">Level 5</option>
+                                <option value="6">Level 6</option>
+                                <option value="7">Level 7</option>
+                                <option value="8">Level 8</option>
+                                <option value="9">Level 9</option>
+                                <option value="10">Level 10</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="premium-table-container">
                         <div class="table-responsive">
@@ -2607,6 +2708,11 @@
                 document.getElementById('teamMembers').textContent = userInfo.teamCount;
                 document.getElementById('teamDeposits').textContent = `${formatUSDT(userInfo.teamDeposits)} USDT`;
                 
+                // Update referral address
+                if (userAccount) {
+                    document.getElementById('userReferralAddress').textContent = userAccount;
+                }
+                
                 // Load positions and update timers
                 const investmentsCount = parseInt(userInfo.positionsCount);
                 await loadPositions(investmentsCount);
@@ -2641,9 +2747,12 @@
             
             try {
                 const positionsTableBody = document.getElementById('positionsTableBody');
-                if (!positionsTableBody) return;
+                const mobilePositionsView = document.getElementById('mobilePositionsView');
+                
+                if (!positionsTableBody || !mobilePositionsView) return;
                 
                 positionsTableBody.innerHTML = '';
+                mobilePositionsView.innerHTML = '';
                 userInvestments = [];
                 
                 const formatUSDT = (weiValue) => {
@@ -2675,22 +2784,70 @@
                             planName = planNames[investment.planIndex];
                         }
                         
-                        // Create position row
+                        // Format dates
+                        const startDate = new Date(parseInt(investment.startTime) * 1000).toLocaleDateString();
+                        const endDate = new Date(parseInt(investment.endTime) * 1000).toLocaleDateString();
+                        const amountFormatted = `${formatUSDT(investment.amount)} USDT`;
+                        const status = investment.isActive ? 'Active' : 'Completed';
+                        const statusClass = investment.isActive ? 'status-active' : 'status-completed';
+                        const statusIcon = investment.isActive ? 'fa-circle-notch fa-spin' : 'fa-check-circle';
+                        
+                        // Create position row for desktop
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${i + 1}</td>
                             <td>${investment.isActive ? 'Deposit' : 'Completed'}</td>
-                            <td>${formatUSDT(investment.amount)} USDT</td>
+                            <td>${amountFormatted}</td>
                             <td>${planName}</td>
-                            <td>${new Date(parseInt(investment.startTime) * 1000).toLocaleDateString()}</td>
-                            <td>${new Date(parseInt(investment.endTime) * 1000).toLocaleDateString()}</td>
-                            <td><span class="status-badge ${investment.isActive ? 'status-active' : 'status-completed'}">
-                                <i class="fas ${investment.isActive ? 'fa-circle-notch fa-spin' : 'fa-check-circle'}"></i>
-                                ${investment.isActive ? 'Active' : 'Completed'}
+                            <td>${startDate}</td>
+                            <td>${endDate}</td>
+                            <td><span class="status-badge ${statusClass}">
+                                <i class="fas ${statusIcon}"></i>
+                                ${status}
                             </span></td>
                         `;
-                        
                         positionsTableBody.appendChild(row);
+                        
+                        // Create mobile position card
+                        const mobileCard = document.createElement('div');
+                        mobileCard.className = 'mobile-position-card';
+                        mobileCard.innerHTML = `
+                            <div class="mobile-position-row">
+                                <div class="mobile-position-label">Position #</div>
+                                <div class="mobile-position-value">${i + 1}</div>
+                            </div>
+                            <div class="mobile-position-row">
+                                <div class="mobile-position-label">Type</div>
+                                <div class="mobile-position-value">${investment.isActive ? 'Deposit' : 'Completed'}</div>
+                            </div>
+                            <div class="mobile-position-row">
+                                <div class="mobile-position-label">Amount</div>
+                                <div class="mobile-position-value">${amountFormatted}</div>
+                            </div>
+                            <div class="mobile-position-row">
+                                <div class="mobile-position-label">Plan</div>
+                                <div class="mobile-position-value">${planName}</div>
+                            </div>
+                            <div class="mobile-position-row">
+                                <div class="mobile-position-label">Start Date</div>
+                                <div class="mobile-position-value">${startDate}</div>
+                            </div>
+                            <div class="mobile-position-row">
+                                <div class="mobile-position-label">End Date</div>
+                                <div class="mobile-position-value">${endDate}</div>
+                            </div>
+                            <div class="mobile-position-row">
+                                <div class="mobile-position-label">Status</div>
+                                <div class="mobile-position-value">
+                                    <span class="status-badge ${statusClass}">
+                                        <i class="fas ${statusIcon}"></i>
+                                        ${status}
+                                    </span>
+                                </div>
+                            </div>
+                        `;
+                        mobilePositionsView.appendChild(mobileCard);
+                        
                     } catch (error) {
                         console.error(`Error loading position ${i}:`, error);
                     }
@@ -3326,8 +3483,10 @@
             // Display filtered team data for desktop
             filteredData.forEach(member => {
                 const row = document.createElement('tr');
+                // FIXED: Address format 0x000 bukan 0x000...000
+                const shortAddress = `${member.address.substring(0, 6)}`;
                 row.innerHTML = `
-                    <td><span class="wallet-address">${member.address.substring(0, 6)}...${member.address.substring(member.address.length - 4)}</span></td>
+                    <td><span class="wallet-address">${shortAddress}</span></td>
                     <td>${member.level}</td>
                     <td>${formatUSDT(member.totalDeposit)} USDT</td>
                     <td>${formatUSDT(member.activeDeposit)} USDT</td>
@@ -3341,10 +3500,12 @@
             filteredData.forEach(member => {
                 const mobileCard = document.createElement('div');
                 mobileCard.className = 'mobile-team-card';
+                // FIXED: Address format 0x000 bukan 0x000...000
+                const shortAddress = `${member.address.substring(0, 6)}`;
                 mobileCard.innerHTML = `
                     <div class="mobile-team-row">
                         <div class="mobile-team-label">Address</div>
-                        <div class="mobile-team-value wallet-address">${member.address.substring(0, 6)}...${member.address.substring(member.address.length - 4)}</div>
+                        <div class="mobile-team-value wallet-address">${shortAddress}</div>
                     </div>
                     <div class="mobile-team-row">
                         <div class="mobile-team-label">Level</div>
