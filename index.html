@@ -684,7 +684,7 @@
             50% { transform: translateY(-20px); }
         }
 
-        /* FIXED PERMANEN: Card header alignment untuk LIVE indicator */
+        /* FIXED: Card header alignment untuk Platform Statistics */
         .card__header { 
             display: flex; 
             justify-content: space-between; 
@@ -697,7 +697,8 @@
             font-size: 1.2rem; 
             font-weight: 600; 
             margin: 0;
-            flex-shrink: 0;
+            text-align: left; /* Perbaikan: teks lebih ke kiri */
+            flex: 1; /* Perbaikan: agar tidak terlalu ke tengah */
         }
         .live-indicator { 
             display: flex; 
@@ -707,7 +708,6 @@
             font-weight: 700; 
             font-size: 0.85rem; 
             white-space: nowrap;
-            flex-shrink: 0;
         }
         .dot { 
             width: 8px; 
@@ -1487,6 +1487,7 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 flex: 1;
+                text-align: left; /* Perbaikan untuk mobile */
             }
             
             .live-indicator {
@@ -1611,6 +1612,7 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 flex: 1;
+                text-align: left; /* Perbaikan untuk very small screens */
             }
             
             .live-indicator {
@@ -3437,7 +3439,7 @@
             if (!contract || !userAccount) return;
             
             try {
-                // Get downlines from contract
+                // Get downlines from contract - FIXED: Mengambil data real dari kontrak
                 const downlines = await contract.methods.getDownlines(userAccount).call();
                 userTeamData = [];
                 
@@ -3445,43 +3447,12 @@
                     return parseFloat(web3.utils.fromWei(weiValue, 'ether')).toFixed(2);
                 };
                 
-                // FIXED: Mengambil data dari semua level (1-20)
-                // Untuk demo, kita akan membuat data contoh untuk semua level
-                // Di implementasi sebenarnya, Anda akan memanggil fungsi kontrak untuk setiap level
-                const teamLevels = [];
-                
-                // Buat data contoh untuk 20 level
-                for (let level = 1; level <= 20; level++) {
-                    // Contoh data untuk setiap level
-                    // Di implementasi nyata, Anda akan memanggil kontrak untuk mendapatkan data setiap level
-                    const teamMembersForLevel = Math.floor(Math.random() * 5); // Contoh: 0-4 anggota per level
-                    
-                    if (teamMembersForLevel > 0) {
-                        for (let j = 0; j < teamMembersForLevel; j++) {
-                            // Generate alamat acak untuk contoh
-                            const fakeAddress = `0x${Array.from({length: 40}, () => 
-                                Math.floor(Math.random() * 16).toString(16)).join('')}`;
-                            
-                            const teamMember = {
-                                address: fakeAddress,
-                                level: level,
-                                totalDeposit: web3.utils.toWei((Math.random() * 1000 + 100).toString(), 'ether'), // 100-1100 USDT
-                                activeDeposit: web3.utils.toWei((Math.random() * 800 + 100).toString(), 'ether'), // 100-900 USDT
-                                teamCount: Math.floor(Math.random() * 10),
-                                teamDeposits: web3.utils.toWei((Math.random() * 5000 + 1000).toString(), 'ether') // 1000-6000 USDT
-                            };
-                            
-                            userTeamData.push(teamMember);
-                        }
-                    }
-                }
-                
-                // Jika kontrak memberikan data downline langsung, tambahkan juga
+                // FIXED: Loop melalui semua downlines dan ambil data real
                 for (let i = 0; i < downlines.length; i++) {
                     const downlineAddress = downlines[i];
                     
                     try {
-                        // Get user info for downline
+                        // Get user info for downline dari kontrak
                         const userInfo = await contract.methods.getUserInfo(downlineAddress).call();
                         const isActive = await contract.methods.isUserActive(downlineAddress).call();
                         
@@ -3494,16 +3465,7 @@
                             teamDeposits: userInfo.teamDeposits
                         };
                         
-                        // Cek apakah sudah ada di userTeamData
-                        const existingIndex = userTeamData.findIndex(member => 
-                            member.address.toLowerCase() === downlineAddress.toLowerCase());
-                        
-                        if (existingIndex === -1) {
-                            userTeamData.push(teamMember);
-                        } else {
-                            // Update data yang ada
-                            userTeamData[existingIndex] = teamMember;
-                        }
+                        userTeamData.push(teamMember);
                     } catch (error) {
                         console.error(`Error loading downline ${downlineAddress}:`, error);
                     }
